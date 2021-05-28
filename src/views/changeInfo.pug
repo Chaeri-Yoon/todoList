@@ -1,0 +1,13 @@
+extends layouts/main
+
+block content
+    .form__container
+        form(action=routes.changeInfo, method="post")
+            input(type="text", name="nickname", value=user.nickname, placeholder="Nickname", required)
+            input(type="text", name="id", value=user.id, placeholder="ID",  readonly)
+            input.btn__changePassword(type="button" value="Change Password")
+            .input__password.unclicked 
+                input(type="password", name="oldPassword", placeholder="Old Password") 
+                input(type="password", name="newPassword", placeholder="New Password") 
+                input(type="password", name="newPassword2", placeholder="Verify New Password") 
+            input(type="submit", value="Change Info")
