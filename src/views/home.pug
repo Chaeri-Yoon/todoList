@@ -1,3 +1,7 @@
 extends layouts/main
 
 block content
+    if loggedUser
+        | Hello 
+        span.username= loggedUser.nickname
+        | !
