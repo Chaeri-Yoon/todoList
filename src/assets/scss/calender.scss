@@ -1,0 +1,99 @@
+.schedule {
+  z-index: 1;
+}
+ul {
+  list-style-type: none;
+}
+aside {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+}
+aside > * {
+  width: 30%;
+}
+/* Month header */
+.month {
+  padding: 1em 1.5em;
+  background: #1abc9c;
+  text-align: center;
+}
+
+/* Month list */
+.month button {
+  color: white;
+}
+.month ul {
+  margin: 0;
+  padding: 0;
+  color: white;
+}
+
+.month ul li {
+  text-transform: uppercase;
+  letter-spacing: 3px;
+}
+
+/* Previous button inside month header */
+.month .prev {
+  float: left;
+  padding-top: 10px;
+  color: white;
+}
+
+/* Next button */
+.month .next {
+  float: right;
+  padding-top: 10px;
+}
+
+/* Weekdays (Mon-Sun) */
+.weekdays {
+  margin: 0;
+  padding: 10px 0;
+  background-color: #ddd;
+}
+
+.weekdays li {
+  display: inline-block;
+  width: 12.3%;
+  color: #666;
+  text-align: center;
+  text-transform: uppercase;
+  font-size: 12px;
+}
+
+/* Days (1-31) */
+.days {
+  padding: 10px 0;
+  background: #eee;
+  margin: 0;
+}
+
+.days li {
+  list-style-type: none;
+  display: inline-block;
+  width: 14%;
+  text-align: center;
+  margin-bottom: 5px;
+  font-size: 12px;
+  color: #777;
+}
+
+/* Highlight the "current" day */
+.days li.active {
+  background: #1abc9c;
+}
+.days li.active button {
+  color: white;
+}
+
+button {
+  outline: none;
+  border: transparent;
+  background-color: transparent;
+}
+
+button:hover {
+  cursor: pointer;
+}

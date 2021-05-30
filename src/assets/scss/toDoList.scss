@@ -1,0 +1,41 @@
+.toDoList {
+  background-color: white;
+
+  color: #666;
+  padding: 1em;
+}
+.toDoForm {
+  display: flex;
+  justify-content: space-between;
+
+  font-size: 1.4em;
+  font-weight: bold;
+
+  margin-bottom: 1em;
+}
+.btn__plus {
+  color: #1abc9c;
+}
+.addArea input,
+.addArea input:focus,
+.taskName:focus {
+  border: none;
+  border-bottom: 1px solid #666;
+  outline: none;
+}
+.toDo li,
+.done li {
+  font-size: 1.1em;
+  margin-bottom: 0.3em;
+}
+.btn__delete {
+  font-size: 0.5em;
+  z-index: 1;
+}
+.btn__delete,
+.btn__modify {
+  padding: 0.3em;
+}
+.btn__modify {
+  padding-left: 1em;
+}

@@ -1,0 +1,30 @@
+.schedule 
+    .calender 
+        .month 
+            ul 
+                li.prev 
+                    button.jsBtnPrevMonth
+                        i.fas.fa-chevron-left.fa-lg
+                li.next 
+                    button.jsBtnNextMonth
+                        i.fas.fa-chevron-right.fa-lg
+                li.jsMonth
+                br
+                span.jsYear(font-size="18px")= 2017
+        ul.weekdays 
+            li Sun
+            li Mon 
+            li Tue 
+            li Wed 
+            li Thu 
+            li Fri 
+            li Sat 
+        ul.days.jsDays 
+    .toDoList 
+        form.toDoForm.jsToDoForm
+            span To Do List
+            .addArea 
+                i.fas.fa-plus.btn__plus
+                input.jsEnterSpace(type="text")
+        ul.toDo.jsToDoList
+        ul.done.jsDoneList
