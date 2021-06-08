@@ -1,6 +1,6 @@
 // currentYear: put the text of currently displayed year on it
 
-import { resetToDoList } from "./toDoList";
+import { resetToDoList} from "./toDoList";
 
 // currentMonth: put the text of currently displayed month on it
 const currentYear = document.querySelector('.jsYear');
@@ -19,7 +19,16 @@ const active = "active";
 //lastDayOfDisplayDate: information about the last day of this month
 let displayYear;
 let displayMonth;
-export let displayDate;
+let displayDate;
+export const getDisplayDate = () => {
+    return displayDate;
+}
+const setDisplayDate = (_year, _month, _day = 1) => {
+    displayYear = _year;
+    displayMonth = _month;
+
+    displayDate = getDateKey(displayYear, displayMonth, _day);
+}
 let firstDayOfDisplayDate;
 let lastDayOfDisplayDate;
 
@@ -27,7 +36,6 @@ let lastDayOfDisplayDate;
 let lastDisplayDate;
 
 const alphabetMonth = ["January", "Fabruary", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-
 function resetCalender(){
     const thisMonthDays = Array.from(dayParent.querySelectorAll('li'));
     thisMonthDays.forEach((thisMonthDay) => dayParent.removeChild(thisMonthDay));
@@ -38,29 +46,22 @@ function getCurrentCalender(){
     const month = date.getMonth();
     const day = date.getDate();
 
-    setDisplayDate(year, month, day);
-    setFirstAndLastDay();
+    setDisplayDate(year, month, day)
     setCalender();
+    resetToDoList();
 }
 function getDateKey(_year, _month, _day, isFirstSetting = true){
     return `${_year}${(_month + 1) < 10 ? "0" + (_month + 1).toString() : (_month + 1)}${_day < 10 ? "0" + _day.toString() : _day}`;
 }
-function setDisplayDate(_year, _month, _day = 1){
-    displayYear = _year;
-    displayMonth = _month;
-
-    displayDate = getDateKey(displayYear, displayMonth, _day);
-    localStorage.setItem('displayDate', displayDate);
-}
-function changeDisplayDate(_button, _key){
+function onDateClicked(_button, _key){
     // 1. Change displayyear,month,date: changeDisplayDate(_key)
     // 2. Remove 'active' class from lastDisplayDate
     // 3. Add 'active' class to the date on the button clicked.
     // 4. Display To-Do List of that date.
 
     const year = parseInt(_key.substring(0, 4));
-    const month =parseInt(_key.substring(4, 6));
-    const day =parseInt(_key.substring(6, 8));
+    const month = parseInt(_key.substring(4, 6));
+    const day = parseInt(_key.substring(6, 8));
 
     setDisplayDate(year, month - 1, day);
     lastDisplayDate.classList.remove(active);
@@ -78,6 +79,7 @@ function setFirstAndLastDay(){
 function setCalender(){
     currentYear.innerText = displayYear;
     currentMonth.innerText = alphabetMonth[displayMonth];
+    setFirstAndLastDay();
 
     for(let i = 0; i < Math.trunc(lastDayOfDisplayDate / 7) + 1; i++){        
         for(let j = 0; j < 7; j++){
@@ -106,7 +108,7 @@ function setCalender(){
             // 2. Remove 'active' class from lastDisplayDate
             // 3. Add 'active' class to the date on the button clicked.
             // 4. Display To-Do List of that date.
-            button.addEventListener('click', function(event){changeDisplayDate(event.target, key)});
+            button.addEventListener('click', function(event){onDateClicked(event.target, key)});
             li.appendChild(button);
             dayParent.appendChild(li);
         }
@@ -118,9 +120,8 @@ function onNextMonthButtonClicked(){
     displayMonth++;
     if(displayMonth > 11) setDisplayDate(++displayYear, displayMonth - 12);
     else setDisplayDate(displayYear, displayMonth);
-    setFirstAndLastDay();
-    setCalender();
 
+    setCalender();
     resetToDoList();
 }
 function onPrevMonthButtonClicked(){
@@ -129,9 +130,8 @@ function onPrevMonthButtonClicked(){
     displayMonth--;
     if(displayMonth < 0) setDisplayDate(--displayYear, displayMonth + 12);
     else setDisplayDate(displayYear, displayMonth);
-    setFirstAndLastDay();
-    setCalender();
 
+    setCalender();
     resetToDoList();
 }
 function init(){

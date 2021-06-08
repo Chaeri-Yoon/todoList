@@ -1,6 +1,7 @@
 import express from "express";
 import passport from "passport";
-import { getChangeInfo, getJoin, getLogin, home, logout, postChangeInfo, postJoin, postLogin } from "./controller";
+import { getChangeInfo, getJoin, getLogin, home, logout, postChangeInfo, postJoin, postLogin } from "./controllers/controller";
+import {addToDoList, deleteToDoList, loadToDoList, updateToDoList} from "./controllers/toDoController";
 import { onlyPrivate, onlyPublic } from "./middlewares";
 import routes from "./routes";
 
@@ -14,4 +15,8 @@ router.post(routes.join, onlyPublic, postJoin, postLogin);
 router.get(routes.logout, onlyPrivate, logout);
 router.get(routes.changeInfo, onlyPrivate, getChangeInfo);
 router.post(routes.changeInfo, onlyPrivate, postChangeInfo);
+router.post(routes.loadToDoList, onlyPrivate, loadToDoList);
+router.post(routes.addToDoList, onlyPrivate, addToDoList);
+router.post(routes.deleteToDoList, onlyPrivate, deleteToDoList);
+router.post(routes.updateToDoList, onlyPrivate, updateToDoList);
 export default router;

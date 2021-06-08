@@ -1,8 +1,11 @@
-import { displayDate } from "./calender";
+import 'regenerator-runtime/runtime';
+import axios from "axios";
+import routes from "../../routes";
+import {getDisplayDate} from "./calender";
 
 const toDoForm = document.querySelector('.jsToDoForm');
 const enterSpace = document.querySelector('.jsEnterSpace');
-const toDo = document.querySelector('.jsToDoList');
+const unDone = document.querySelector('.jsToDoList');
 const done = document.querySelector('.jsDoneList');
 
 const UNDONE = "undone";
@@ -10,50 +13,24 @@ const DONE = "done";
 const UNDONEBUTTON = "fa-square";
 const DONEBUTTON = "fa-check-square";
 
-let lastToDoNum = 0;
-let lastDoneNum = 0;
-
-let toDoTasks = [];
-let doneTasks = [];
-
 export function resetToDoList(){
-    toDoTasks.length = 0;
-    lastToDoNum = 0;
-
-    doneTasks.length = 0;
-    lastDoneNum = 0;
-
-    if(toDo.childNodes != null) toDo.childNodes.forEach((li) => toDo.removeChild(li));
-    if(done.childNodes != null) done.childNodes.forEach((li) => done.removeChild(li));
-
-    while (toDo.firstChild) {
-        toDo.removeChild(toDo.firstChild);
+    if(unDone.childNodes != null) {
+        while(unDone.firstChild){
+            unDone.removeChild(unDone.lastChild);
+        }
     }
-    while (done.firstChild) {
-        done.removeChild(done.firstChild);
+    if(done.childNodes != null) {
+        while(done.firstChild){
+            done.removeChild(done.lastChild);
+        }
     }
-
     loadData();
 }
-function loadData(){
-    let loadedToDoData = localStorage.getItem([displayDate] + "__" + [UNDONE]);
-
-    if(loadedToDoData != null){
-        loadedToDoData = JSON.parse(loadedToDoData);
-        loadedToDoData.forEach((task) => addTask(task["task"], true));
-    }
-
-    let loadedDoneData = localStorage.getItem([displayDate] + "__" + [DONE]);
-    if(loadedDoneData != null){
-        loadedDoneData = JSON.parse(loadedDoneData);
-        loadedDoneData.forEach((task) => addTask(task["task"], false));
-    }
-}
 function onTaskEntered(event){
-    addTask(enterSpace.value, true);
+    addData(enterSpace.value, false);
     enterSpace.value = "";
 }
-function addTask(_task, _isUnDone){
+function addTask(_task, _isDone, _taskID){
     const li = document.createElement('li');
     const checkButton = document.createElement('button');
     const modifyButton = document.createElement('button');
@@ -67,9 +44,9 @@ function addTask(_task, _isUnDone){
     span.addEventListener('keypress', function(e){if(e.code == "Enter") updateTask(e);});
 
     checkButtonIcon.classList.add('far');
-    checkButtonIcon.classList.add(_isUnDone ? UNDONEBUTTON : DONEBUTTON);
+    checkButtonIcon.classList.add(_isDone ? DONEBUTTON : UNDONEBUTTON);
     checkButtonIcon.classList.add('fa-lg');
-    checkButtonIcon.addEventListener('click', checkIfDone);
+    checkButtonIcon.addEventListener('click', checkTask);
 
     modifyButtonIcon.classList.add('fas');
     modifyButtonIcon.classList.add('fa-pencil-alt');
@@ -85,8 +62,8 @@ function addTask(_task, _isUnDone){
 
     checkButton.appendChild(checkButtonIcon);
     modifyButton.appendChild(modifyButtonIcon);
-    li.id = _isUnDone ? (lastToDoNum)++ + 1 : (lastDoneNum)++ + 1;
-    li.classList.add(_isUnDone ? UNDONE : DONE);
+
+    li.classList.add(_isDone ? DONE : UNDONE);
     li.addEventListener('mouseover', ()=>{
                                             modifyButton.style.display = "inline";
                                             deleteButton.style.display = "inline";
@@ -100,84 +77,75 @@ function addTask(_task, _isUnDone){
     li.appendChild(modifyButton);
     li.appendChild(deleteButton);
 
-    if(_isUnDone)   toDo.appendChild(li);
-    else done.appendChild(li);
-
-    addData(_task, _isUnDone);
+    li.name = _taskID;
+    if(_isDone)   done.appendChild(li);
+    else unDone.appendChild(li);
 }
-function checkIfDone(event){
+function checkTask(event){
     const clickedButton = event.target;
-    const selectedTodo = event.target.parentNode.parentNode;
-    if(selectedTodo.classList.contains(UNDONE)){
-        clickedButton.classList.remove(UNDONEBUTTON);
-        clickedButton.classList.add(DONEBUTTON);
+    const selectedTask = event.target.parentNode.parentNode;
 
-        selectedTodo.classList.remove(UNDONE);
-        selectedTodo.classList.add(DONE);
+    const _isUnDone = selectedTask.classList.contains(UNDONE);
+    clickedButton.classList.remove(_isUnDone ? UNDONEBUTTON : DONEBUTTON);
+    clickedButton.classList.add(_isUnDone ? DONEBUTTON : UNDONEBUTTON);
+    selectedTask.classList.remove(_isUnDone ? UNDONE : DONE);
+    selectedTask.classList.add(_isUnDone ? DONE : UNDONE);
 
-        moveToDoneTasks(event);
-    }
-    else{
-        clickedButton.classList.remove(DONEBUTTON);
-        clickedButton.classList.add(UNDONEBUTTON);
-
-        selectedTodo.classList.remove(DONE);
-        selectedTodo.classList.add(UNDONE);
-
-        moveToToDoTasks(event);
-    }
+    // Parent 옮기기
+    if(_isUnDone)  unDone.appendChild(event.target.parentNode.parentNode);
+    else done.appendChild(event.target.parentNode.parentNode);
+    // DB에서 done여부 바꾸기
+    updateData(null, !_isUnDone, selectedTask.name);
 }
-function moveToDoneTasks(event){
-    const text = event.target.parentNode.parentNode.childNodes[1].innerText;
-    removeData(event.target.parentNode.parentNode, true);
-    
-    event.target.parentNode.parentNode.id = (lastDoneNum)++ + 1;
-    done.appendChild(event.target.parentNode.parentNode);
-    addData(text, false);
-}
-function moveToToDoTasks(event){
-    const text = event.target.parentNode.parentNode.childNodes[1].innerText;
-    removeData(event.target.parentNode.parentNode, false);
-
-    event.target.parentNode.parentNode.id = (lastToDoNum)++ + 1;
-    toDo.appendChild(event.target.parentNode.parentNode);
-    addData(text, true);
-}
-function addData(task, _isUnDone){
-    let array = _isUnDone ? toDoTasks : doneTasks;
-    const num = _isUnDone ? lastToDoNum: lastDoneNum;
-    const taskObj = {
-        id : num,
-        task: task
-    }
-    array.push(taskObj);
-
-    if(_isUnDone) toDoTasks = array;
-    else doneTasks = array;
-
-    if(toDoTasks.length != 0){
-        const toDoData = JSON.stringify(toDoTasks);
-        localStorage.setItem([displayDate] + "__" + [UNDONE], toDoData);
-    }
-    if(doneTasks.length != 0){
-        const doneData = JSON.stringify(doneTasks);
-        localStorage.setItem([displayDate] + "__" + [DONE], doneData);
-    }
-}
-function removeData(_item, _isUnDone){
-    let array = _isUnDone ? toDoTasks : doneTasks;
-    const cleanArray = array.filter(function(task) {
-        return task.id !== parseInt(_item.id);
+const loadData = async() => {
+    const response = await axios({
+        url: routes.loadToDoList,
+        method: "POST",
+        data: {
+            date: getDisplayDate()
+        }
     });
-    array = cleanArray;
-
-    if(_isUnDone) toDoTasks = array;
-    else doneTasks = array;
+    if(response.status === 200)   {
+        const toDoList = response.data["toDoList"];
+        if(toDoList !== null)   toDoList.forEach(element => addTask(element.taskDescription, element.isDone, element._id));
+    }
     
-    const toDoData = JSON.stringify(toDoTasks);
-    localStorage.setItem([displayDate] + "__" + [UNDONE], toDoData);
-    const doneData = JSON.stringify(doneTasks);
-    localStorage.setItem([displayDate] + "__" + [DONE], doneData);
+}
+const addData = async(taskDescription, isDone) => {
+    const response = await axios({
+        url: routes.addToDoList,
+        method: "POST",
+        data: {
+            date: getDisplayDate(),
+            taskDescription, 
+            isDone
+        }
+    });
+    if(response.status === 200){
+        const taskID = response.data["task-id"];
+        addTask(taskDescription, isDone, taskID);
+    }
+}
+const updateData = async (taskDescription, taskID) => {
+    const response = await axios({
+        url: routes.updateToDoList,
+        method: "POST",
+        data: {
+            date: getDisplayDate(),
+            taskDescription,
+            taskID
+        }
+    });
+}
+const removeData = async (taskID) => {
+    const response = await axios({
+        url: routes.deleteToDoList,
+        method: "POST",
+        data: {
+            date: getDisplayDate(),
+            taskID
+        }
+    });
 }
 function modifyTaskText(event){
     const modifyItem = event.target.parentNode.parentNode.querySelector('.taskName');
@@ -186,35 +154,22 @@ function modifyTaskText(event){
 }
 function updateTask(event){
     event.target.contentEditable = false;
-    event.target = null;
+    //event.target = null;
 
-    const isUnDone = event.target.parentNode.classList.contains(UNDONE);
-    const array =  isUnDone ? toDoTasks : doneTasks;
-    const id = event.target.parentNode.id;
+    const updatedTask = event.target.parentNode;
     const text = event.target.innerText;
 
-    array.forEach((task)=> {if(task.id == id) task.task = text;});
-
-    if(isUnDone) toDoTasks = array;
-    else doneTasks = array;
-
-    const toDoData = JSON.stringify(toDoTasks);
-    localStorage.setItem([displayDate] + "__" + [UNDONE], toDoData);
-
-    const doneData = JSON.stringify(doneTasks);
-    localStorage.setItem([displayDate] + "__" + [DONE], doneData);
+    updateData(text, updatedTask.name);
 }
 function deleteTask(event){
     const selectedTask = event.target.parentNode;
     const isUnDone = selectedTask.classList.contains(UNDONE);
     selectedTask.parentNode.removeChild(selectedTask);
     
-    console.log(selectedTask, isUnDone);
-    removeData(selectedTask, isUnDone);
+    removeData(selectedTask.name);
 }
 
 function init(){
     if(toDoForm != null) toDoForm.addEventListener('submit', function(event) {event.preventDefault(); onTaskEntered(event);});
-    loadData();
 }
 init();

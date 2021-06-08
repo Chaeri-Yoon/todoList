@@ -1,6 +1,6 @@
-import routes from "./routes";
+import routes from "../routes";
 
-import User from "./models/User";
+import User from "../models/User";
 import passport from "passport";
 
 export const home = (req, res) => res.render("home");

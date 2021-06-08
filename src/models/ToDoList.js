@@ -3,7 +3,10 @@ import passport from "passport-local-mongoose";
 
 const ToDoListSchema = new mongoose.Schema({
     date: String,
-    toDo: [String]
+    toDo: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Task",
+    }]
 });
 
 ToDoListSchema.plugin(passport);
