@@ -112,18 +112,23 @@ const loadData = async() => {
     
 }
 const addData = async(taskDescription, isDone) => {
-    const response = await axios({
-        url: routes.addToDoList,
-        method: "POST",
-        data: {
-            date: getDisplayDate(),
-            taskDescription, 
-            isDone
+    try{
+        const response = await axios({
+            url: routes.addToDoList,
+            method: "POST",
+            data: {
+                date: getDisplayDate(),
+                taskDescription, 
+                isDone
+            }
+        });
+        if(response.status === 200){
+            const taskID = response.data["task-id"];
+            addTask(taskDescription, isDone, taskID);
         }
-    });
-    if(response.status === 200){
-        const taskID = response.data["task-id"];
-        addTask(taskDescription, isDone, taskID);
+    }
+    catch{
+        console.log(error);
     }
 }
 const updateData = async (taskDescription, taskID) => {

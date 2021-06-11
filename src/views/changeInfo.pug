@@ -4,7 +4,7 @@ block content
     .form__container
         form(action=routes.changeInfo, method="post")
             input(type="text", name="nickname", value=user.nickname, placeholder="Nickname", required)
-            input(type="text", name="id", value=user.id, placeholder="ID",  readonly)
+            input(type="text", name="userId", value=user.id, placeholder="ID",  readonly)
             input.btn__changePassword(type="button" value="Change Password")
             .input__password.unclicked 
                 input(type="password", name="oldPassword", placeholder="Old Password") 

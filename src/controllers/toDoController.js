@@ -1,18 +1,24 @@
 import routes from "../routes";
+
+import User from "../models/User";
 import ToDoList from "../models/ToDoList";
 import Task from "../models/Task";
 
+let userDB;
+let selectedToDoList;
 export const loadToDoList = async(req, res) => {
     const {
         body: {date}
     } = req;
-    try{
-        const findByDate = await ToDoList.findOne({date}).populate('toDo');
-        if(findByDate !== null)    res.send({"toDoList" : findByDate.toDo});
-    }
-    catch(error){
-        console.log(error);
-        res.status(400);
+    if(userDB !== null){
+        try{
+            selectedToDoList = await ToDoList.findOne({date, user:req.user._id}).populate('toDo');
+            if(selectedToDoList !== null)    res.send({"toDoList" : selectedToDoList.toDo});
+        }
+        catch(error){
+            console.log(error);
+            res.status(400);
+        }
     }
 }
 
@@ -21,19 +27,19 @@ export const addToDoList = async (req, res) => {
         body : {date, taskDescription, isDone}
     } = req;
     try{
-        const findByDate = await ToDoList.findOne({date});
         const newTask = await Task.create({
             taskDescription,
             isDone
         });
-
-        if(findByDate){
-            findByDate.toDo.push(newTask._id);
-            findByDate.save();
-            console.log(findByDate);
+        if(selectedToDoList !== null){
+            selectedToDoList.toDo.push(newTask._id);
+            selectedToDoList.save();
         }
         else{
-            await ToDoList.create({date, toDo: newTask._id});
+            selectedToDoList = await ToDoList.create({date, user: req.user._id, toDo: newTask._id});
+            userDB.toDoList.push(selectedToDoList._id);
+            selectedToDoList.populate('toDo');
+            userDB.save();
         }
         res.send({"task-id" : newTask._id});
     }
@@ -47,13 +53,12 @@ export const deleteToDoList = async (req, res) => {
         body : {date, taskID}
     } = req;
     try{
-        const findByDate = await ToDoList.findOne({date}).populate('toDo');
-        if(findByDate){
-            const cleanArray = findByDate.toDo.filter(function(_element){
+        if(selectedToDoList !== null){
+            const cleanArray = selectedToDoList.toDo.filter(function(_element){
                 return _element._id.toString() !== taskID
             });
-            findByDate.toDo = cleanArray;
-            findByDate.save();
+            selectedToDoList.toDo = cleanArray;
+            selectedToDoList.save();
             
             await Task.findByIdAndRemove({_id:taskID});
         }
@@ -68,9 +73,8 @@ export const updateToDoList = async (req, res) => {
         body : {date, taskDescription, taskID}
     } = req;
     try{
-        const findByDate = await ToDoList.findOne({date}).populate('toDo');
-        if(findByDate){
-            findByDate.toDo.forEach(async (element) => {
+        if(selectedToDoList !== null){
+            selectedToDoList.toDo.forEach(async (element) => {
                 if(element._id.toString() == taskID){
                     await Task.findByIdAndUpdate(taskID, {taskDescription});
                     return; 
@@ -82,4 +86,7 @@ export const updateToDoList = async (req, res) => {
         console.log(error);
         res.status(400);
     }
+}
+export const setUserDB = async (_userData) => {
+    userDB = await User.findById(_userData).populate('toDoList').populate('toDo');
 }

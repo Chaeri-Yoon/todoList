@@ -353,7 +353,8 @@ var addData = /*#__PURE__*/function () {
       while (1) {
         switch (_context2.prev = _context2.next) {
           case 0:
-            _context2.next = 2;
+            _context2.prev = 0;
+            _context2.next = 3;
             return axios__WEBPACK_IMPORTED_MODULE_1___default()({
               url: _routes__WEBPACK_IMPORTED_MODULE_2__.default.addToDoList,
               method: "POST",
@@ -364,7 +365,7 @@ var addData = /*#__PURE__*/function () {
               }
             });
 
-          case 2:
+          case 3:
             response = _context2.sent;
 
             if (response.status === 200) {
@@ -372,12 +373,20 @@ var addData = /*#__PURE__*/function () {
               addTask(taskDescription, isDone, taskID);
             }
 
-          case 4:
+            _context2.next = 10;
+            break;
+
+          case 7:
+            _context2.prev = 7;
+            _context2.t0 = _context2["catch"](0);
+            console.log(error);
+
+          case 10:
           case "end":
             return _context2.stop();
         }
       }
-    }, _callee2);
+    }, _callee2, null, [[0, 7]]);
   }));
 
   return function addData(_x, _x2) {
@@ -2877,10 +2886,10 @@ var JOIN = "/join";
 var LOGIN = "/login";
 var LOGOUT = "/logout";
 var CHANGEINFO = "/change-info";
-var LOADTODOLIST = "/api/:id/load-todolist";
-var ADDTODOLIST = "/api/:id/add-todolist";
-var DELETETODOLIST = "/api/:id/delete-todolist";
-var UPDATETODOLIST = "/api/:id/update-todolist";
+var LOADTODOLIST = "/api/load-todolist";
+var ADDTODOLIST = "/api/add-todolist";
+var DELETETODOLIST = "/api/delete-todolist";
+var UPDATETODOLIST = "/api/update-todolist";
 var routes = {
   home: HOME,
   join: JOIN,

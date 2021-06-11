@@ -4,10 +4,10 @@ const LOGIN = "/login";
 const LOGOUT = "/logout";
 const CHANGEINFO = "/change-info";
 
-const LOADTODOLIST = "/api/:id/load-todolist";
-const ADDTODOLIST = "/api/:id/add-todolist";
-const DELETETODOLIST = "/api/:id/delete-todolist";
-const UPDATETODOLIST = "/api/:id/update-todolist";
+const LOADTODOLIST = "/api/load-todolist";
+const ADDTODOLIST = "/api/add-todolist";
+const DELETETODOLIST = "/api/delete-todolist";
+const UPDATETODOLIST = "/api/update-todolist";
 
 const routes = {
     home : HOME,

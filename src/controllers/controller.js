@@ -2,8 +2,12 @@ import routes from "../routes";
 
 import User from "../models/User";
 import passport from "passport";
+import { setUserDB } from "./toDoController";
 
-export const home = (req, res) => res.render("home");
+export const home = (req, res) => {
+    if(res.locals.loggedUser !== null) setUserDB(req.user._id);
+    res.render("home");
+}
 export const getLogin = (req, res) => res.render("login");
 export const postLogin = passport.authenticate('local', {
     successRedirect: routes.home,
@@ -12,7 +16,7 @@ export const postLogin = passport.authenticate('local', {
 export const getJoin = (req, res) => res.render("join");
 export const postJoin =  async(req, res, next) => {
     const{
-        body: {nickname, id, password, password2}
+        body: {nickname, userId, password, password2}
     } = req;
     if(password !== password2){
         console.log("패스워드 불일치");
@@ -21,7 +25,7 @@ export const postJoin =  async(req, res, next) => {
     }
     else{
         try{
-            const newUser = new User({nickname, id});
+            const newUser = new User({nickname, userId});
             await User.register(newUser, password);
             next();
         }
@@ -34,10 +38,10 @@ export const postJoin =  async(req, res, next) => {
 export const getChangeInfo = (req, res) => res.render("changeInfo", {user:req.user});
 export const postChangeInfo = async (req, res) => {
     const{
-        body: {nickname, id, oldPassword, newPassword, newPassword2}
+        body: {nickname, userId, oldPassword, newPassword, newPassword2}
     } = req;
     try{
-        await User.findOneAndUpdate({id}, {nickname});
+        await User.findOneAndUpdate({userId}, {nickname});
     }
     catch(error){
         console.log(error);

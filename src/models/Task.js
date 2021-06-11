@@ -6,7 +6,6 @@ const TaskSchema = new mongoose.Schema({
     isDone : Boolean
 });
 
-TaskSchema.plugin(passport);
 const model = mongoose.model("Task", TaskSchema);
 
 export default model;
