@@ -63,6 +63,7 @@ export const deleteToDoList = async (req, res) => {
             
             await Task.findByIdAndRemove({_id:taskID});
         }
+        res.send();
     }
     catch(error){
         console.log(error);
@@ -82,6 +83,7 @@ export const updateToDoList = async (req, res) => {
                 }
             })
         }
+        res.send();
     }
     catch(error){
         console.log(error);
