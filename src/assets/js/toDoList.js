@@ -13,7 +13,7 @@ const DONE = "done";
 const UNDONEBUTTON = "fa-square";
 const DONEBUTTON = "fa-check-square";
 
-export function resetToDoList(){
+export const resetToDoList = () => {
     if(unDone.childNodes != null) {
         while(unDone.firstChild){
             unDone.removeChild(unDone.lastChild);
@@ -26,11 +26,11 @@ export function resetToDoList(){
     }
     loadData();
 }
-function onTaskEntered(event){
+const onTaskEntered = (event) => {
     addData(enterSpace.value, false);
     enterSpace.value = "";
 }
-function addTask(_task, _isDone, _taskID){
+const addTask = (_task, _isDone, _taskID) => {
     const li = document.createElement('li');
     const checkButton = document.createElement('button');
     const modifyButton = document.createElement('button');
@@ -81,7 +81,7 @@ function addTask(_task, _isDone, _taskID){
     if(_isDone)   done.appendChild(li);
     else unDone.appendChild(li);
 }
-function checkTask(event){
+const checkTask = (event) => {
     const clickedButton = event.target;
     const selectedTask = event.target.parentNode.parentNode;
 
@@ -97,7 +97,7 @@ function checkTask(event){
     // DB에서 done여부 바꾸기
     updateData(null, !_isUnDone, selectedTask.name);
 }
-const loadData = async() => {
+const loadData = async () => {
     const response = await axios({
         url: routes.loadToDoList,
         method: "POST",
@@ -107,9 +107,10 @@ const loadData = async() => {
     });
     if(response.status === 200)   {
         const toDoList = response.data["toDoList"];
-        if(toDoList !== null)   toDoList.forEach(element => addTask(element.taskDescription, element.isDone, element._id));
+        if(toDoList !== null)   {
+            toDoList.forEach(element => addTask(element.taskDescription, element.isDone, element._id));
+        }
     }
-    
 }
 const addData = async(taskDescription, isDone) => {
     try{
@@ -152,12 +153,12 @@ const removeData = async (taskID) => {
         }
     });
 }
-function modifyTaskText(event){
+const modifyTaskText = (event) => {
     const modifyItem = event.target.parentNode.parentNode.querySelector('.taskName');
     modifyItem.contentEditable = true;
     modifyItem.focus();
 }
-function updateTask(event){
+const updateTask = (event) => {
     event.target.contentEditable = false;
     //event.target = null;
 
@@ -166,7 +167,7 @@ function updateTask(event){
 
     updateData(text, updatedTask.name);
 }
-function deleteTask(event){
+const deleteTask = (event) => {
     const selectedTask = event.target.parentNode;
     const isUnDone = selectedTask.classList.contains(UNDONE);
     selectedTask.parentNode.removeChild(selectedTask);
@@ -174,7 +175,7 @@ function deleteTask(event){
     removeData(selectedTask.name);
 }
 
-function init(){
+const init = () => {
     if(toDoForm != null) toDoForm.addEventListener('submit', function(event) {event.preventDefault(); onTaskEntered(event);});
 }
 init();

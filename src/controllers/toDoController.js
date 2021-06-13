@@ -6,6 +6,7 @@ import Task from "../models/Task";
 
 let userDB;
 let selectedToDoList;
+
 export const loadToDoList = async(req, res) => {
     const {
         body: {date}
@@ -13,7 +14,7 @@ export const loadToDoList = async(req, res) => {
     if(userDB !== null){
         try{
             selectedToDoList = await ToDoList.findOne({date, user:req.user._id}).populate('toDo');
-            if(selectedToDoList !== null)    res.send({"toDoList" : selectedToDoList.toDo});
+            res.send({"toDoList" : selectedToDoList != null ? selectedToDoList.toDo : null});
         }
         catch(error){
             console.log(error);
