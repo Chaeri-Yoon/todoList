@@ -1,2 +1,12 @@
-@import "./calender.scss";
-@import "./toDoList.scss";
+@import "./config/_variables";
+@import "./config/reset.scss";
+
+@import "./main.scss";
+
+@import "./partials/header.scss";
+@import "./partials/calender.scss";
+@import "./partials/toDoList.scss";
+@import "./partials/form.scss";
+
+@import "./pages/home.scss";
+@import "./pages/changeInfo.scss";

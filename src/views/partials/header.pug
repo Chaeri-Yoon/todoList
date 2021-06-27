@@ -4,12 +4,14 @@ header.header
             i.fas.fa-home
     .header__column
         if !loggedUser
-            li 
-                a(href=routes.join) Join 
-            li 
-                a(href=routes.login) Log In
+            ul
+                li 
+                    a(href=routes.join) Join 
+                li 
+                    a(href=routes.login) Log In
         else
-            li 
-                a(href=routes.changeInfo) My account 
-            li 
-                a(href=routes.logout) Log Out
+            ul
+                li 
+                    a(href=routes.changeInfo) My account 
+                li 
+                    a(href=routes.logout) Log Out

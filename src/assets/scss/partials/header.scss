@@ -1,0 +1,22 @@
+header {
+  padding: $padding;
+  margin-bottom: 30px;
+  background-color: $header-background;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  .header__column {
+    width: 50%;
+    ul {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      li {
+        padding: 0 $padding;
+      }
+      li:last-child {
+        border-left: 1px solid white;
+      }
+    }
+  }
+}

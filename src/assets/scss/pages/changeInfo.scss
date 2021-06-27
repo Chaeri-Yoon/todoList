@@ -1,0 +1,9 @@
+.input__password.clicked {
+  margin-top: 10px;
+
+  display: flex;
+  flex-direction: column;
+}
+.input__password.unclicked {
+  display: none;
+}

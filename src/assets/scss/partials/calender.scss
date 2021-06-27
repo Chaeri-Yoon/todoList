@@ -15,7 +15,7 @@ aside > * {
 /* Month header */
 .month {
   padding: 1em 1.5em;
-  background: #1abc9c;
+  background: $calender-background;
   text-align: center;
 }
 
@@ -82,7 +82,7 @@ aside > * {
 
 /* Highlight the "current" day */
 .days li.active {
-  background: #1abc9c;
+  background: $calender-background;
 }
 .days li.active button {
   color: white;

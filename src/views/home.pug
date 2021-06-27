@@ -2,6 +2,8 @@ extends layouts/main
 
 block content
     if loggedUser
-        | Hello 
-        span.username= loggedUser.nickname
-        | !
+        span.greeting Hello 
+            span.username= loggedUser.nickname
+            | !
+    aside 
+            include ./partials/calender

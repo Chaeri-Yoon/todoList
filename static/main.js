@@ -19,17 +19,15 @@ var passwords = document.querySelector('.input__password');
 var displayChangePassword = function displayChangePassword() {
   if (passwords.classList.contains('unclicked')) {
     passwords.classList.remove('unclicked');
-    passwords.classList.add('clicked');
-    passwords.style.display = "flex";
+    passwords.classList.add('clicked'); //passwords.style.display = "flex";
   } else {
     passwords.classList.remove('clicked');
-    passwords.classList.add('unclicked');
-    passwords.style.display = "none";
+    passwords.classList.add('unclicked'); //passwords.style.display = "none";
   }
 };
 
 var init = function init() {
-  if (passwords != null) passwords.style.display = "none";
+  //if(passwords != null)   passwords.style.display = "none";
   if (btnChangePassword != null) btnChangePassword.addEventListener('click', displayChangePassword);
 };
 
@@ -224,7 +222,7 @@ var UNDONE = "undone";
 var DONE = "done";
 var UNDONEBUTTON = "fa-square";
 var DONEBUTTON = "fa-check-square";
-function resetToDoList() {
+var resetToDoList = function resetToDoList() {
   if (unDone.childNodes != null) {
     while (unDone.firstChild) {
       unDone.removeChild(unDone.lastChild);
@@ -238,14 +236,14 @@ function resetToDoList() {
   }
 
   loadData();
-}
+};
 
-function onTaskEntered(event) {
+var onTaskEntered = function onTaskEntered(event) {
   addData(enterSpace.value, false);
   enterSpace.value = "";
-}
+};
 
-function addTask(_task, _isDone, _taskID) {
+var addTask = function addTask(_task, _isDone, _taskID) {
   var li = document.createElement('li');
   var checkButton = document.createElement('button');
   var modifyButton = document.createElement('button');
@@ -289,9 +287,9 @@ function addTask(_task, _isDone, _taskID) {
   li.appendChild(deleteButton);
   li.name = _taskID;
   if (_isDone) done.appendChild(li);else unDone.appendChild(li);
-}
+};
 
-function checkTask(event) {
+var checkTask = function checkTask(event) {
   var clickedButton = event.target;
   var selectedTask = event.target.parentNode.parentNode;
 
@@ -305,7 +303,7 @@ function checkTask(event) {
   if (_isUnDone) unDone.appendChild(event.target.parentNode.parentNode);else done.appendChild(event.target.parentNode.parentNode); // DB에서 done여부 바꾸기
 
   updateData(null, !_isUnDone, selectedTask.name);
-}
+};
 
 var loadData = /*#__PURE__*/function () {
   var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
@@ -328,9 +326,12 @@ var loadData = /*#__PURE__*/function () {
 
             if (response.status === 200) {
               toDoList = response.data["toDoList"];
-              if (toDoList !== null) toDoList.forEach(function (element) {
-                return addTask(element.taskDescription, element.isDone, element._id);
-              });
+
+              if (toDoList !== null) {
+                toDoList.forEach(function (element) {
+                  return addTask(element.taskDescription, element.isDone, element._id);
+                });
+              }
             }
 
           case 4:
@@ -461,33 +462,33 @@ var removeData = /*#__PURE__*/function () {
   };
 }();
 
-function modifyTaskText(event) {
+var modifyTaskText = function modifyTaskText(event) {
   var modifyItem = event.target.parentNode.parentNode.querySelector('.taskName');
   modifyItem.contentEditable = true;
   modifyItem.focus();
-}
+};
 
-function updateTask(event) {
+var updateTask = function updateTask(event) {
   event.target.contentEditable = false; //event.target = null;
 
   var updatedTask = event.target.parentNode;
   var text = event.target.innerText;
   updateData(text, updatedTask.name);
-}
+};
 
-function deleteTask(event) {
+var deleteTask = function deleteTask(event) {
   var selectedTask = event.target.parentNode;
   var isUnDone = selectedTask.classList.contains(UNDONE);
   selectedTask.parentNode.removeChild(selectedTask);
   removeData(selectedTask.name);
-}
+};
 
-function init() {
+var init = function init() {
   if (toDoForm != null) toDoForm.addEventListener('submit', function (event) {
     event.preventDefault();
     onTaskEntered(event);
   });
-}
+};
 
 init();
 
