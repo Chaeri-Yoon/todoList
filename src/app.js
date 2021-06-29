@@ -11,7 +11,7 @@ import { localsMiddleware } from "./middlewares";
 
 const app = express();
 app.set('view engine', "pug");
-app.set("views", path.join(__dirname, "views"));
+app.set('views', process.cwd() + "/src/views");
 app.use('/static', express.static('static'));
 
 app.use(bodyParser.urlencoded({extended : true}));
