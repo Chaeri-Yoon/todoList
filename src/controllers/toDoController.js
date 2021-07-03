@@ -72,13 +72,14 @@ export const deleteToDoList = async (req, res) => {
 }
 export const updateToDoList = async (req, res) => {
     const {
-        body : {date, taskDescription, taskID}
+        body : {taskDescription, taskID, isDone}
     } = req;
     try{
         if(selectedToDoList !== null){
             selectedToDoList.toDo.forEach(async (element) => {
                 if(element._id.toString() == taskID){
-                    await Task.findByIdAndUpdate(taskID, {taskDescription});
+                    if(taskDescription !== null)    await Task.findByIdAndUpdate(taskID, {taskDescription});
+                    else if(isDone !== null) await Task.findByIdAndUpdate(taskID, {isDone});
                     return; 
                 }
             })

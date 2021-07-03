@@ -85,17 +85,16 @@ const checkTask = (event) => {
     const clickedButton = event.target;
     const selectedTask = event.target.parentNode.parentNode;
 
-    const _isUnDone = selectedTask.classList.contains(UNDONE);
-    clickedButton.classList.remove(_isUnDone ? UNDONEBUTTON : DONEBUTTON);
-    clickedButton.classList.add(_isUnDone ? DONEBUTTON : UNDONEBUTTON);
-    selectedTask.classList.remove(_isUnDone ? UNDONE : DONE);
-    selectedTask.classList.add(_isUnDone ? DONE : UNDONE);
+    const _isDone = selectedTask.classList.contains(DONE);
+    clickedButton.classList.remove(_isDone ? DONEBUTTON : UNDONEBUTTON);
+    clickedButton.classList.add(_isDone ? UNDONEBUTTON : DONEBUTTON);
+    selectedTask.classList.remove(_isDone ? DONE : UNDONE);
+    selectedTask.classList.add(_isDone ? UNDONE : DONE);
 
-    // Parent 옮기기
-    if(_isUnDone)  unDone.appendChild(event.target.parentNode.parentNode);
+    if(_isDone)  unDone.appendChild(event.target.parentNode.parentNode);
     else done.appendChild(event.target.parentNode.parentNode);
-    // DB에서 done여부 바꾸기
-    updateData(null, !_isUnDone, selectedTask.name);
+
+    updateData(null, selectedTask.name, !_isDone);
 }
 const loadData = async () => {
     const response = await axios({
@@ -132,14 +131,15 @@ const addData = async(taskDescription, isDone) => {
         console.log(error);
     }
 }
-const updateData = async (taskDescription, taskID) => {
+const updateData = async (taskDescription, taskID, isDone) => {
     const response = await axios({
         url: routes.updateToDoList,
         method: "POST",
         data: {
             date: getDisplayDate(),
             taskDescription,
-            taskID
+            taskID,
+            isDone
         }
     });
 }
@@ -160,12 +160,11 @@ const modifyTaskText = (event) => {
 }
 const updateTask = (event) => {
     event.target.contentEditable = false;
-    //event.target = null;
 
     const updatedTask = event.target.parentNode;
     const text = event.target.innerText;
 
-    updateData(text, updatedTask.name);
+    updateData(text, updatedTask.name, null);
 }
 const deleteTask = (event) => {
     const selectedTask = event.target.parentNode;
