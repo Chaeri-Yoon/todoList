@@ -7,6 +7,7 @@ import bodyParser from "body-parser";
 import session from "express-session";
 import passport from "passport";
 import "./passport";
+import flash from "connect-flash";
 import { localsMiddleware } from "./middlewares";
 
 const app = express();
@@ -21,6 +22,7 @@ app.use(session({
     resave: false,
     saveUninitialized: true
   }));
+app.use(flash());
 app.use(passport.initialize());
 app.use(passport.session());
 

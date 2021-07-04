@@ -8,10 +8,14 @@ export const home = (req, res) => {
     if(res.locals.loggedUser !== null) setUserDB(req.user._id);
     res.render("home");
 }
-export const getLogin = (req, res) => res.render("login");
+export const getLogin = (req, res) => {
+    const error = req.flash().error || null;
+    res.render("login", {error});
+}
 export const postLogin = passport.authenticate('local', {
     successRedirect: routes.home,
-    failureRedirect: routes.login
+    failureRedirect: routes.login,
+    failureFlash: 'Invalid username or password.'
 })
 export const getJoin = (req, res) => res.render("join");
 export const postJoin =  async(req, res, next) => {
