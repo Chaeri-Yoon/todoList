@@ -1,5 +1,3 @@
-import routes from "../routes";
-
 import User from "../models/User";
 import ToDoList from "../models/ToDoList";
 import Task from "../models/Task";
@@ -55,13 +53,21 @@ export const deleteToDoList = async (req, res) => {
     } = req;
     try{
         if(selectedToDoList !== null){
-            const cleanArray = selectedToDoList.toDo.filter(function(_element){
-                return _element._id.toString() !== taskID
-            });
-            selectedToDoList.toDo = cleanArray;
-            selectedToDoList.save();
+            const cleanArray = selectedToDoList.toDo.filter((_element) => {return _element._id.toString() !== taskID;});
+            if(cleanArray.length == 0)  {
+                const _find = await ToDoList.findOne({date});
+                await ToDoList.findOneAndDelete({date});
+                
+                const cleanTodo = userDB.toDoList.filter((_element) => {return _element._id.toString() !== _find._id.toString();});
+                userDB.toDoList = cleanTodo;
+                userDB.save();
+            }
+            else{
+                selectedToDoList.toDo = cleanArray;
+                selectedToDoList.save();
+            }
             
-            await Task.findByIdAndRemove({_id:taskID});
+            await Task.findOneAndDelete({_id:taskID});
         }
         res.send();
     }
