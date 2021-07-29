@@ -1,11 +1,13 @@
 import mongoose from "mongoose";
+// In theory, this can be moved as we load dotenv in the entry file, 'init.js'
+// However, the problem in loading env file keeps occuring for some reason and will be dealt with soon.
 import dotenv from "dotenv";
 dotenv.config();
 
-mongoose.connect(process.env.MONGOATLAS_URL, 
+mongoose.connect(process.env.MONGOATLAS_URL,
     {
-    useNewUrlParser: true,
-    useFindAndModify: false
+        useNewUrlParser: true,
+        useFindAndModify: false
     }
 );
 

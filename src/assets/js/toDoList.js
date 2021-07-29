@@ -1,7 +1,6 @@
-import 'regenerator-runtime/runtime';
 import axios from "axios";
 import routes from "../../routes";
-import {getDisplayDate} from "./calender";
+import { getDisplayDate } from "./calender";
 
 const toDoForm = document.querySelector('.jsToDoForm');
 const enterSpace = document.querySelector('.jsEnterSpace');
@@ -14,19 +13,20 @@ const UNDONEBUTTON = "fa-square";
 const DONEBUTTON = "fa-check-square";
 
 export const resetToDoList = () => {
-    if(unDone.childNodes != null) {
-        while(unDone.firstChild){
+    if (unDone.childNodes != null) {
+        while (unDone.firstChild) {
             unDone.removeChild(unDone.lastChild);
         }
     }
-    if(done.childNodes != null) {
-        while(done.firstChild){
+    if (done.childNodes != null) {
+        while (done.firstChild) {
             done.removeChild(done.lastChild);
         }
     }
     loadData();
 }
 const onTaskEntered = (event) => {
+    event.preventDefault();
     addData(enterSpace.value, false);
     enterSpace.value = "";
 }
@@ -41,7 +41,7 @@ const addTask = (_task, _isDone, _taskID) => {
 
     span.innerText = _task;
     span.classList.add('taskName');
-    span.addEventListener('keypress', function(e){if(e.code == "Enter") updateTask(e);});
+    span.addEventListener('keypress', function (e) { if (e.code == "Enter") updateTask(e); });
 
     checkButtonIcon.classList.add('far');
     checkButtonIcon.classList.add(_isDone ? DONEBUTTON : UNDONEBUTTON);
@@ -64,21 +64,21 @@ const addTask = (_task, _isDone, _taskID) => {
     modifyButton.appendChild(modifyButtonIcon);
 
     li.classList.add(_isDone ? DONE : UNDONE);
-    li.addEventListener('mouseover', ()=>{
-                                            modifyButton.style.display = "inline";
-                                            deleteButton.style.display = "inline";
-                                        });
-    li.addEventListener('mouseleave', ()=>{
-                                            modifyButton.style.display = "none";
-                                            deleteButton.style.display = "none";
-                                        });
+    li.addEventListener('mouseover', () => {
+        modifyButton.style.display = "inline";
+        deleteButton.style.display = "inline";
+    });
+    li.addEventListener('mouseleave', () => {
+        modifyButton.style.display = "none";
+        deleteButton.style.display = "none";
+    });
     li.appendChild(checkButton);
     li.appendChild(span);
     li.appendChild(modifyButton);
     li.appendChild(deleteButton);
 
     li.name = _taskID;
-    if(_isDone)   done.appendChild(li);
+    if (_isDone) done.appendChild(li);
     else unDone.appendChild(li);
 }
 const checkTask = (event) => {
@@ -91,49 +91,47 @@ const checkTask = (event) => {
     selectedTask.classList.remove(_isDone ? DONE : UNDONE);
     selectedTask.classList.add(_isDone ? UNDONE : DONE);
 
-    if(_isDone)  unDone.appendChild(event.target.parentNode.parentNode);
+    if (_isDone) unDone.appendChild(event.target.parentNode.parentNode);
     else done.appendChild(event.target.parentNode.parentNode);
 
     updateData(null, selectedTask.name, !_isDone);
 }
 const loadData = async () => {
-    const response = await axios({
-        url: routes.loadToDoList,
-        method: "POST",
-        data: {
-            date: getDisplayDate()
-        }
-    });
-    if(response.status === 200)   {
-        const toDoList = response.data["toDoList"];
-        if(toDoList !== null)   {
-            toDoList.forEach(element => addTask(element.taskDescription, element.isDone, element._id));
-        }
-    }
-}
-const addData = async(taskDescription, isDone) => {
-    try{
+    try {
         const response = await axios({
-            url: routes.addToDoList,
+            url: `${routes.api}${routes.loadToDoList}`,
+            method: "GET",
+            params: {
+                date: getDisplayDate()
+            }
+        });
+        const toDoList = response.data["toDoList"];
+        if (toDoList !== null) toDoList.forEach(element => addTask(element.taskDescription, element.isDone, element._id));
+    } catch (e) { }
+}
+const addData = async (taskDescription, isDone) => {
+    try {
+        const response = await axios({
+            url: `${routes.api}${routes.addToDoList}`,
             method: "POST",
             data: {
                 date: getDisplayDate(),
-                taskDescription, 
+                taskDescription,
                 isDone
             }
         });
-        if(response.status === 200){
+        if (response.status === 200) {
             const taskID = response.data["task-id"];
             addTask(taskDescription, isDone, taskID);
         }
     }
-    catch{
+    catch {
         console.log(error);
     }
 }
 const updateData = async (taskDescription, taskID, isDone) => {
-    const response = await axios({
-        url: routes.updateToDoList,
+    await axios({
+        url: `${routes.api}${routes.updateToDoList}`,
         method: "POST",
         data: {
             date: getDisplayDate(),
@@ -144,8 +142,8 @@ const updateData = async (taskDescription, taskID, isDone) => {
     });
 }
 const removeData = async (taskID) => {
-    const response = await axios({
-        url: routes.deleteToDoList,
+    await axios({
+        url: `${routes.api}${routes.deleteToDoList}`,
         method: "POST",
         data: {
             date: getDisplayDate(),
@@ -168,13 +166,12 @@ const updateTask = (event) => {
 }
 const deleteTask = (event) => {
     const selectedTask = event.target.parentNode;
-    const isUnDone = selectedTask.classList.contains(UNDONE);
     selectedTask.parentNode.removeChild(selectedTask);
-    
+
     removeData(selectedTask.name);
 }
 
 const init = () => {
-    if(toDoForm != null) toDoForm.addEventListener('submit', function(event) {event.preventDefault(); onTaskEntered(event);});
+    if (toDoForm != null) toDoForm.addEventListener('submit', event => onTaskEntered(event));
 }
 init();
