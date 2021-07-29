@@ -1,7 +1,7 @@
 import express from "express";
-import { onlyPrivate } from "../middlewares";
-import { addToDoList, deleteToDoList, loadToDoList, updateToDoList } from "../controllers/toDoController";
-import routes from "../routes";
+import { onlyPrivate } from "@/middlewares";
+import { addToDoList, deleteToDoList, loadToDoList, updateToDoList } from "@controllers/toDoController";
+import routes from "@/routes";
 
 const router = express.Router();
 

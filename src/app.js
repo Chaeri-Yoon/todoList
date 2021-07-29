@@ -1,14 +1,13 @@
-import path from "path";
 import express from "express";
-import router from './routers/router';
-import apiRouter from './routers/apiRouter';
-import routes from "./routes";
+import router from '@routers/router';
+import apiRouter from '@routers/apiRouter';
+import routes from "@/routes";
 
 import session from "express-session";
 import passport from "passport";
-import "./passport";
+import "@/passport";
 import flash from "connect-flash";
-import { localsMiddleware } from "./middlewares";
+import { localsMiddleware } from "@/middlewares";
 // In theory, this can be moved as we load dotenv in the entry file, 'init.js'
 // However, the problem in loading env file keeps occuring for some reason and will be dealt with soon.
 import dotenv from "dotenv";

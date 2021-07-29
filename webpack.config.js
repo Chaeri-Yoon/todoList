@@ -4,7 +4,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 module.exports = {
   entry: path.resolve(__dirname, "src", "assets", "js", "main.js"),
   output: {
-    path:path.join(__dirname, "static"),
+    path: path.join(__dirname, "static"),
     filename: "main.js"
   },
   module: {
@@ -12,9 +12,9 @@ module.exports = {
       {
         test: /\.jsx?$/,
         use: [
-            {
-                loader: "babel-loader"
-            }
+          {
+            loader: "babel-loader"
+          }
         ]
       },
       {

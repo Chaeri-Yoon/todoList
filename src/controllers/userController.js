@@ -1,7 +1,7 @@
 import passport from "passport";
-import routes from "../routes";
-import User from "../models/User";
-import { setUserDB } from "./toDoController";
+import routes from "@/routes";
+import User from "@models/User";
+import { setUserDB } from "@controllers/toDoController";
 
 export const home = (req, res) => {
     if (res.locals.loggedUser !== null) setUserDB(req.user._id);

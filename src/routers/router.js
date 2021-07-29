@@ -1,7 +1,7 @@
 import express from "express";
-import { getChangeInfo, getJoin, getLogin, home, logout, postChangeInfo, postJoin, postLogin } from "../controllers/userController";
-import { onlyPrivate, onlyPublic } from "../middlewares";
-import routes from "../routes";
+import { getChangeInfo, getJoin, getLogin, home, logout, postChangeInfo, postJoin, postLogin } from "@controllers/userController";
+import { onlyPrivate, onlyPublic } from "@/middlewares";
+import routes from "@/routes";
 
 const router = express.Router();
 

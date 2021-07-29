@@ -1,6 +1,6 @@
-import User from '../models/User';
-import ToDoList from "../models/ToDoList";
-import Task from "../models/Task";
+import User from '@models/User';
+import ToDoList from "@models/ToDoList";
+import Task from "@models/Task";
 
 let userDB;
 let selectedToDoList;
